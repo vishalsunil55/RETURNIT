@@ -1,8 +1,8 @@
 // src/pages/Admin/AdminDashboard.jsx
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import '../styles/global.css';
-import '../styles/theme.css';
+import "../../styles/global.css";
+import "../../styles/theme.css";
 
 const AdminDashboard = () => {
   return (

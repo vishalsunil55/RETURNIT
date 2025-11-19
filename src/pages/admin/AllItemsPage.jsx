@@ -1,8 +1,9 @@
 // src/pages/Admin/AllItemsPage.jsx
 import React, { useEffect, useState } from 'react';
 // import { itemService } from '../../services/itemService';
-import '../styles/global.css';
-import '../styles/theme.css';
+import "../../styles/global.css";
+import "../../styles/theme.css";
+
 
 const AllItemsPage = () => {
   const [items, setItems] = useState([]);

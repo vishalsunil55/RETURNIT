@@ -1,8 +1,9 @@
 // src/pages/Admin/UserManagementPage.jsx
 import React, { useEffect, useState } from 'react';
 // import { userService } from '../../services/userService';
-import '../styles/global.css';
-import '../styles/theme.css';
+import "../../styles/global.css";
+import "../../styles/theme.css";
+
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState([]);
