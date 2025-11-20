@@ -1,32 +1,55 @@
 // src/services/authService.js
 
-// Stubbed authentication service — replace with actual API calls
+// Hard-coded "database" of users for stubbed login
+const usersDB = [
+  { id: '1', name: 'vishal', email: 'vishal@example.com', password: '123456', role: 'admin' },
+  { id: '2', name: 'Bob User',   email: 'bob@example.com',   password: 'password456', role: 'user' }
+];
+
 export const authService = {
   login: async ({ email, password }) => {
-    // TODO: call your backend API: e.g., POST /auth/login
-    // For now, return dummy user & token
-    return {
-      token: 'dummy-token',
-      user: { id: '1', name: 'Demo User', email, role: 'user' }
-    };
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const found = usersDB.find(u => u.email === email && u.password === password);
+        if (!found) {
+          reject(new Error('Invalid email or password.'));
+        } else {
+          const { id, name, email: userEmail, role } = found;
+          resolve({
+            token: `dummy-token-${id}`,
+            user: { id, name, email: userEmail, role }
+          });
+        }
+      }, 500);
+    });
   },
-  
+
   register: async ({ name, email, password }) => {
-    // TODO: call your backend API: e.g., POST /auth/register
-    // For now, simulate a successful register and return login result
-    return {
-      token: 'dummy-token',
-      user: { id: '2', name, name, email, role: 'user' }
-    };
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const exists = usersDB.some(u => u.email === email);
+        if (exists) {
+          reject(new Error('Email already registered.'));
+        } else {
+          const newId = (usersDB.length + 1).toString();
+          const newUser = { id: newId, name, email, password, role: 'user' };
+          usersDB.push(newUser);
+          resolve({
+            token: `dummy-token-${newId}`,
+            user: { id: newId, name, email, role: 'user' }
+          });
+        }
+      }, 500);
+    });
   },
-  
+
   logout: async () => {
-    // TODO: inform backend of logout if needed
-    return true;
+    return Promise.resolve(true);
   },
-  
-  getCurrentUser: async () => {
-    // TODO: fetch current user data using token
-    return { id: '1', name: 'Demo User', email: 'demo@example.com', role: 'user' };
+
+  getCurrentUser: async (token) => {
+    // stub: return first user (or decode token in real world)
+    const u = usersDB[0];
+    return { id: u.id, name: u.name, email: u.email, role: u.role };
   }
 };

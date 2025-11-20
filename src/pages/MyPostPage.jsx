@@ -2,8 +2,7 @@
 import React, { useEffect } from 'react';
 import { useItems } from '../hooks/useItems';
 import ItemList from '../components/items/ItemList';
-import '../styles/global.css';
-import '../styles/theme.css';
+
 
 const MyPostPage = () => {
   const { items, fetchItems, loading, error } = useItems('my');

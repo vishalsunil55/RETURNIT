@@ -1,9 +1,11 @@
 // src/pages/ReportLostPage.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import UploadImage from '../components/items/UploadImage';
 import { itemService } from '../services/itemService';
 
 const ReportLostPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -15,53 +17,143 @@ const ReportLostPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleImageUpload = images => {
-    setFormData({ ...formData, images });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
+  const handleImageUpload = (images) => {
+    setFormData(prev => ({ ...prev, images }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     setSubmitting(true);
     try {
       await itemService.createItem({ ...formData, type: 'lost' });
-      // handle success (redirect, clear form, etc.)
+      navigate('/lost-items', { replace: true });
     } catch (err) {
-      setError(err.message || 'Something went wrong');
+      setError(err.response?.data?.message || err.message || 'Something went wrong');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="report-lost-page">
-      <h2>Report Lost Item</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Title:
-          <input name="title" value={formData.title} onChange={handleChange} required />
-        </label>
-        <label>
-          Description:
-          <textarea name="description" value={formData.description} onChange={handleChange} required />
-        </label>
-        <label>
-          Date Lost:
-          <input type="date" name="dateLost" value={formData.dateLost} onChange={handleChange} required />
-        </label>
-        <label>
-          Location:
-          <input name="location" value={formData.location} onChange={handleChange} required />
-        </label>
-        <label>
-          Contact Info:
-          <input name="contactInfo" value={formData.contactInfo} onChange={handleChange} required />
-        </label>
-        <UploadImage onUpload={handleImageUpload} />
-        { error && <p className="error">{error}</p> }
-        <button type="submit" disabled={submitting}>{ submitting ? 'Submitting…' : 'Submit' }</button>
-      </form>
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">
+          Report Lost Item
+        </h2>
+
+        { error && (
+          <div className="mb-6 text-sm text-red-600 bg-red-100 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Title
+            </label>
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows={4}
+              value={formData.description}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Date Lost & Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="dateLost" className="block text-sm font-medium text-gray-700">
+                Date Lost
+              </label>
+              <input
+                id="dateLost"
+                name="dateLost"
+                type="date"
+                value={formData.dateLost}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+                Location
+              </label>
+              <input
+                id="location"
+                name="location"
+                type="text"
+                value={formData.location}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <label htmlFor="contactInfo" className="block text-sm font-medium text-gray-700">
+              Contact Info
+            </label>
+            <input
+              id="contactInfo"
+              name="contactInfo"
+              type="text"
+              value={formData.contactInfo}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Images (optional)
+            </label>
+            <UploadImage onUpload={handleImageUpload} />
+          </div>
+
+          {/* Submit Button */}
+          <div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {submitting ? 'Submitting…' : 'Submit Report'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
