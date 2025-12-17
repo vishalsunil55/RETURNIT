@@ -1,3 +1,4 @@
+// src/router/PrivateRoute.jsx
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,21 +8,27 @@ const PrivateRoute = ({ requireAdmin = false }) => {
   const location = useLocation();
 
   if (loading) {
-    // You may render a loading spinner here
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Checking authentication…
+      </div>
+    );
   }
 
   if (!user) {
-    // Not logged in: redirect to login
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location }}
+        replace
+      />
+    );
   }
 
-  if (requireAdmin && user.role !== 'admin') {
-    // Logged in but not admin: redirect somewhere else
+  if (requireAdmin && user?.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
 
-  // User is authorized
   return <Outlet />;
 };
 

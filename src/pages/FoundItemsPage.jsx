@@ -1,85 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { itemService } from '../services/itemService';
-import { Link } from 'react-router-dom';
+// src/pages/FoundItemsPage.jsx
+import React, { useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import ItemList from '../components/items/ItemList';
+import { useItems } from '../hooks/useItems';
 
 const FoundItemsPage = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchFoundItems = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      const allItems = await itemService.getAllItems({ type: 'found' });
-      setItems(allItems);
-    } catch (err) {
-      setError(err.message || 'Failed to load items.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
+  const { items, fetchItems, loading, error } = useItems('found');
 
   useEffect(() => {
-    fetchFoundItems();
-  }, []);
+    fetchItems();
+  }, [fetchItems]);
+
+  const handleItemSelect = (id) => {
+    navigate(`/found-items/${id}`);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">
-          Found Items
-        </h2>
 
-        {loading && <p className="text-center text-gray-500">Loading items…</p>}
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Found Items
+          </h2>
+          <p className="text-gray-600">
+            Browse items that people have found and reported.
+          </p>
+        </div>
+
+        {/* Error */}
         {error && (
-          <div className="mb-6 text-sm text-red-600 bg-red-100 px-4 py-3 rounded">
+          <div className="mb-6 text-sm text-red-700 bg-red-100 px-4 py-3 rounded">
             {error}
           </div>
         )}
 
+        {/* Empty state */}
         {!loading && items.length === 0 && (
-          <p className="text-center text-gray-600">
-            No found items yet.{' '}
-            <Link to="/report-found" className="text-blue-600 hover:underline">
-              Report one now
-            </Link>.
-          </p>
+          <div className="text-center text-gray-600 py-16">
+            <p className="mb-4">No found items reported yet.</p>
+            <Link
+              to="/report-found"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Report a found item
+            </Link>
+          </div>
         )}
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map(item => (
-            <div key={item.id} className="bg-white rounded-lg shadow p-6 flex flex-col">
-              {item.images && item.images.length > 0 ? (
-                <img
-                  src={item.images[0]}
-                  alt={item.title}
-                  className="w-full h-40 object-cover rounded-md mb-4"
-                />
-              ) : (
-                <div className="w-full h-40 bg-gray-200 rounded-md mb-4 flex items-center justify-center text-gray-500">
-                  No image
-                </div>
-              )}
-              <h3 className="text-xl font-medium text-gray-800 mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-              <p className="text-sm text-gray-500">
-                <strong>Date Found: </strong>
-                {item.dateFound}
-              </p>
-              <p className="text-sm text-gray-500">
-                <strong>Location: </strong>
-                {item.location}
-              </p>
-              <Link
-                to={`/found-items/${item.id}`}
-                className="mt-4 text-blue-600 hover:underline self-start"
-              >
-                View Details
-              </Link>
-            </div>
-          ))}
-        </div>
+        {/* List */}
+        <ItemList
+          items={items}
+          loading={loading}
+          onItemSelect={handleItemSelect}
+        />
+
       </div>
     </div>
   );

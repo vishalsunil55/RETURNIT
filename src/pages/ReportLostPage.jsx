@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UploadImage from '../components/items/UploadImage';
-import { itemService } from '../services/itemService';
+import { itemService } from '../services/itemservice';
 
 const ReportLostPage = () => {
   const navigate = useNavigate();
@@ -41,115 +41,135 @@ const ReportLostPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">
-          Report Lost Item
-        </h2>
+    <div className="min-h-screen bg-gray-100 py-12 px-4">
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+        
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Report Lost Item
+          </h2>
+          <p className="text-gray-600">
+            Provide accurate details to increase the chances of recovery.
+          </p>
+        </div>
 
-        { error && (
-          <div className="mb-6 text-sm text-red-600 bg-red-100 px-4 py-3 rounded">
+        {error && (
+          <div className="mb-6 text-sm text-red-700 bg-red-100 px-4 py-3 rounded">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Title
-            </label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-8">
 
-          {/* Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              rows={4}
-              value={formData.description}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
+          {/* Item Details */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">Item Details</h3>
 
-          {/* Date Lost & Location */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="dateLost" className="block text-sm font-medium text-gray-700">
-                Date Lost
-              </label>
-              <input
-                id="dateLost"
-                name="dateLost"
-                type="date"
-                value={formData.dateLost}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium">Title</label>
+                <input
+                  name="title"
+                  type="text"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g. Black Wallet"
+                  className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">Description</label>
+                <textarea
+                  name="description"
+                  rows={4}
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                  placeholder="Describe identifying details"
+                  className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
             </div>
-            <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                Location
-              </label>
-              <input
-                id="location"
-                name="location"
-                type="text"
-                value={formData.location}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-          </div>
+          </section>
 
-          {/* Contact Info */}
-          <div>
-            <label htmlFor="contactInfo" className="block text-sm font-medium text-gray-700">
-              Contact Info
-            </label>
+          {/* When & Where */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">When & Where</h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium">Date Lost</label>
+                <input
+                  name="dateLost"
+                  type="date"
+                  value={formData.dateLost}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">Location</label>
+                <input
+                  name="location"
+                  type="text"
+                  value={formData.location}
+                  onChange={handleChange}
+                  required
+                  placeholder="City, station, landmark"
+                  className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Contact */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+
             <input
-              id="contactInfo"
               name="contactInfo"
               type="text"
               value={formData.contactInfo}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Phone number or email"
+              className="w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
             />
-          </div>
 
-          {/* Image Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Images (optional)
-            </label>
-            <UploadImage onUpload={handleImageUpload} />
-          </div>
+            <p className="text-xs text-gray-500 mt-1">
+              This will only be shared with verified matches.
+            </p>
+          </section>
 
-          {/* Submit Button */}
-          <div>
+          {/* Images */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">Images (Optional)</h3>
+            <UploadImage onUpload={handleImageUpload} multiple />
+          </section>
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               type="submit"
               disabled={submitting}
-              className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition ${
+                submitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
               {submitting ? 'Submitting…' : 'Submit Report'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-md transition"
+            >
+              Cancel
             </button>
           </div>
         </form>

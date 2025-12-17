@@ -1,6 +1,4 @@
-// src/services/itemService.js
 
-// In-memory stub data
 let itemsDb = [
   {
     id: '1',

@@ -2,7 +2,7 @@
 
 // Hard-coded "database" of users for stubbed login
 const usersDB = [
-  { id: '1', name: 'vishal', email: 'vishal@example.com', password: '123456', role: 'admin' },
+  { id: '1', name: 'vishal', email: 'vishalsunil55@gmail.com', password: '123456', role: 'admin' },
   { id: '2', name: 'Bob User',   email: 'bob@example.com',   password: 'password456', role: 'user' }
 ];
 

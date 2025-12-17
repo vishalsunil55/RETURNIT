@@ -6,13 +6,16 @@ import { useAuth } from '../../contexts/AuthContext';
 const RegisterForm = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
+
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,110 +28,131 @@ const RegisterForm = () => {
 
     const { name, email, password, confirmPassword } = formData;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       setError('All fields are required.');
       return;
     }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
 
+    setLoading(true);
     try {
       await register({ name, email, password });
       navigate('/', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Registration failed. Please try again.');
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        'Registration failed. Please try again.'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
+
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Create an Account
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Join ReturnIt to report and recover lost items
+          </p>
+        </div>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-100 p-3 rounded">
+          <div className="mb-4 text-sm text-red-700 bg-red-100 px-4 py-3 rounded">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
+
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Full Name
+            <label className="block text-sm font-medium text-gray-700">
+              Full name
             </label>
             <input
-              id="name"
               name="name"
               type="text"
-              placeholder="Your full name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Your full name"
+              disabled={loading}
               required
+              className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email Address
+            <label className="block text-sm font-medium text-gray-700">
+              Email address
             </label>
             <input
-              id="email"
               name="email"
               type="email"
-              placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              placeholder="you@example.com"
+              disabled={loading}
               required
+              className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
-              id="password"
               name="password"
               type="password"
-              placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              placeholder="••••••••"
+              disabled={loading}
               required
+              className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-              Confirm Password
+            <label className="block text-sm font-medium text-gray-700">
+              Confirm password
             </label>
             <input
-              id="confirmPassword"
               name="confirmPassword"
               type="password"
-              placeholder="Confirm your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Confirm your password"
+              disabled={loading}
               required
+              className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
+            disabled={loading}
+            className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Register
+            {loading ? 'Creating account…' : 'Register'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-blue-600 hover:underline font-medium">
             Log in here
           </Link>
         </p>

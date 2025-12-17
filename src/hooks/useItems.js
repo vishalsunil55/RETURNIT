@@ -1,7 +1,7 @@
 // src/hooks/useItems.js
 import { useState, useEffect, useCallback } from 'react';
+import { itemService } from '../services/itemservice';
 
-// Stubbed hook for fetching items
 export const useItems = (type) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -9,10 +9,18 @@ export const useItems = (type) => {
 
   const fetchItems = useCallback(async () => {
     setLoading(true);
+    setError(null);
+
     try {
-      // TODO: call service to get items by type (lost/found/my)
-      // Example: const data = await itemService.getAllItems({ type });
-      setItems([]); // stub data
+      let data;
+
+      if (type === 'my') {
+        data = await itemService.getMyItems();
+      } else {
+        data = await itemService.getAllItems({ type });
+      }
+
+      setItems(data || []);
     } catch (err) {
       setError(err.message || 'Failed to load items.');
     } finally {
@@ -24,5 +32,10 @@ export const useItems = (type) => {
     fetchItems();
   }, [fetchItems]);
 
-  return { items, loading, error, fetchItems };
+  return {
+    items,
+    loading,
+    error,
+    fetchItems
+  };
 };

@@ -2,17 +2,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ItemCard from './ItemCard';
-import './ItemList.css';  // optional CSS file for styling
+import './ItemList.css';
 
-const ItemList = ({ items, onItemSelect }) => {
+const ItemList = ({ items, onItemSelect, loading }) => {
+  if (loading) {
+    return (
+      <div className="item-list__state">
+        <p>Loading items...</p>
+      </div>
+    );
+  }
+
   if (!items || items.length === 0) {
-    return <p>No items to display.</p>;
+    return (
+      <div className="item-list__state">
+        <h3>No items found</h3>
+        <p>Try adjusting your search or be the first to report an item.</p>
+      </div>
+    );
   }
 
   return (
     <div className="item-list">
       {items.map(item => (
-        <ItemCard  
+        <ItemCard
           key={item.id}
           item={item}
           onClick={onItemSelect}
@@ -34,12 +47,14 @@ ItemList.propTypes = {
       images: PropTypes.arrayOf(PropTypes.string)
     })
   ),
-  onItemSelect: PropTypes.func
+  onItemSelect: PropTypes.func,
+  loading: PropTypes.bool
 };
 
 ItemList.defaultProps = {
   items: [],
-  onItemSelect: () => {}
+  onItemSelect: () => {},
+  loading: false
 };
 
 export default ItemList;
